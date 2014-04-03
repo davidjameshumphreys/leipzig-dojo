@@ -1,3 +1,4 @@
+
 (ns leipzig-dojo.core
 (:use
     leipzig.melody
@@ -77,19 +78,21 @@
        (where :pitch key)
        play))
 
-(defn song "Play a song"
-  [speed key]
-  (->> (phrase [4/4 4/4]
-               [12 15 ])
 
-       (times 10)
-       (where :part (is :leader))
-       (where :time speed)
-       (where :duration speed)
-       (where :pitch key)
-       play))
+(defn based-on-c [note]
+  (when note
+   (- (note) (C))))
 
-(comment
-  (row-row (bpm 120) (comp D sharp major))
-  (row-row (bpm 90) (comp low B flat minor))
-)
+(def close-encounter (phrase (repeat 4/4)
+                             (map based-on-c [G A F (comp low F) C nil G A F (comp low F) C nil])
+                             ))
+(defn new-song
+  []
+  (let [sp (bpm 80)]
+   (->> close-encounter
+        (times 1)
+        (where :part (is :leader))
+        (where :time sp)
+        (where :duration sp)
+        (where :pitch C)
+        play)))
